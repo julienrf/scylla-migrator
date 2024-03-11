@@ -22,7 +22,7 @@ object Test {
       .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy")))
       .build()
 
-//    println(sourceDDb.listTables())
+    println(sourceDDb.listTables())
 
 //    println(targetAlternator.listTables())
   }
