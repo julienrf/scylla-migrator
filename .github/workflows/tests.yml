@@ -17,10 +17,12 @@ jobs:
           distribution: temurin
           java-version: 8
           cache: sbt
-      - name: Set up services
-        run: docker compose -f docker-compose-tests.yml up -d
       - name: Build migrator
         run: ./build.sh
+      - name: Set up services
+        run: docker compose -f docker-compose-tests.yml up -d
+      - name: Wait for services to be up
+        run: sleep 30
       - name: Run tests
         run: sbt test
       - name: Stop services
