@@ -16,8 +16,8 @@ object Test {
     scala.sys.process.Process("curl http://localhost:8001").run().exitValue()
 
     Thread.sleep(2000)
-//    val sourceDDb: AmazonDynamoDB = AmazonDynamoDBClientBuilder
-//      .standard()
+    val sourceDDb = AmazonDynamoDBClientBuilder
+      .standard()
 //      .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
 //      .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy")))
 //      .build()
