@@ -30,6 +30,7 @@ jobs:
       - run: |
           docker ps -a
           docker network ls
+      - run: curl http://localhost:8001
       - name: Run tests
         run: sbt tests/run
       - name: Stop services
