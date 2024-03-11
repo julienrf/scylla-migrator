@@ -14,7 +14,7 @@ import scala.util.chaining._
  * It expects external services (DynamoDB, Scylla, Spark, etc.) to be running.
  * See the files `CONTRIBUTING.md` and `docker-compose-tests.yml` for more information.
  */
-class MigratorSuite extends munit.FunSuite {
+trait MigratorSuite extends munit.FunSuite {
 
   /** Client of a source DynamoDB instance */
   val sourceDDb: AmazonDynamoDB = AmazonDynamoDBClientBuilder
