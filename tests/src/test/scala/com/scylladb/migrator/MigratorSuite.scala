@@ -19,13 +19,13 @@ class MigratorSuite extends munit.FunSuite {
   /** Client of a source DynamoDB instance */
   val sourceDDb: AmazonDynamoDB = AmazonDynamoDBClientBuilder
     .standard()
-    .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
+    .withEndpointConfiguration(new EndpointConfiguration("http://127.0.0.1:8001", "eu-central-1"))
     .build()
 
   /** Client of a target Alternator instance */
   val targetAlternator: AmazonDynamoDB = AmazonDynamoDBClientBuilder
     .standard()
-    .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8000", "eu-central-1"))
+    .withEndpointConfiguration(new EndpointConfiguration("http://127.0.0.1:8000", "eu-central-1"))
     .build()
 
   /**
