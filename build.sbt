@@ -69,8 +69,10 @@ lazy val migrator = (project in file("migrator")).settings(
 )
 
 lazy val tests = project.in(file("tests")).settings(
+  scalacOptions ++= Seq("-target:jvm-1.8"),
   libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-dynamodb" % awsSdkVersion,
+    "software.amazon.awssdk" % "dynamodb" % "2.25.6",
     "org.scalameta" %% "munit" % "0.7.29",
     "org.scala-lang.modules" %% "scala-collection-compat" % "2.11.0"
   ),

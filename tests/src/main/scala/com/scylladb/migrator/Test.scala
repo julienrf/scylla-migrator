@@ -2,7 +2,11 @@ package com.scylladb.migrator
 
 import com.amazonaws.auth.{AWSStaticCredentialsProvider, BasicAWSCredentials}
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
+import com.amazonaws.services.dynamodbv2.model.ListTablesRequest
 import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+
+import java.net.URI
 
 object Test {
 
@@ -16,13 +20,16 @@ object Test {
     scala.sys.process.Process("curl http://localhost:8001").run().exitValue()
     println()
 
-    val sourceDDb = AmazonDynamoDBClientBuilder
-      .standard()
-      .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
-      .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy")))
-      .build()
+//    val sourceDDb = AmazonDynamoDBClientBuilder
+//      .standard()
+//      .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
+//      .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy")))
+//      .build()
+//
+//    println(sourceDDb.listTables())
 
-    println(sourceDDb.listTables())
+    val source = DynamoDbClient.builder().endpointOverride(new URI("http://localhost:8001")).build()
+    println(source.listTables())
 
 //    println(targetAlternator.listTables())
   }
