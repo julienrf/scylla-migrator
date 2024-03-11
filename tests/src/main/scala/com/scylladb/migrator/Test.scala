@@ -21,6 +21,7 @@ object Test {
       .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
       .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy")))
       .build()
+    println(s"Client builded: ${sourceDDb}")
 //    println(sourceDDb.listTables())
 
 
