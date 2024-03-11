@@ -14,15 +14,15 @@ object Test {
 
   def main(args: Array[String]): Unit = {
     scala.sys.process.Process("curl http://localhost:8001").run().exitValue()
+    println()
 
-    Thread.sleep(2000)
     val sourceDDb = AmazonDynamoDBClientBuilder
       .standard()
       .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
       .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy")))
       .build()
-    println(s"Client builded: ${sourceDDb}")
-    println(sourceDDb.listTables())
+
+//    println(sourceDDb.listTables())
 
 //    println(targetAlternator.listTables())
   }
