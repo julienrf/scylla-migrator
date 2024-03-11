@@ -21,11 +21,11 @@ jobs:
       - name: Set up services
         run: docker compose -f docker-compose-tests.yml up -d
       - name: Wait for services to be up
-        run: sleep 30
+        run: sleep 20
       - run: |
           docker ps -a
           docker network ls
       - name: Run tests
-        run: curl http://localhost:8000
+        run: curl http://localhost:8001
       - name: Stop services
         run: docker compose -f docker-compose-tests.yml down

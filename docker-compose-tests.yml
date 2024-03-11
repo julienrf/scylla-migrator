@@ -11,5 +11,19 @@ services:
     networks:
       - scylla
 
+  dynamodb:
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb
+    networks:
+      - scylla
+    expose:
+      - 8001
+    ports:
+      - "8001:8000"
+    volumes:
+      - "./tests/docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+
 networks:
   scylla:
