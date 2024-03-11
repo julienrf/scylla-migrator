@@ -9,7 +9,9 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-
+    env:
+      AWS_ACCESS_KEY_ID: dummy
+      AWS_SECRET_KEY: dummy
     steps:
       - uses: actions/checkout@v3
       - name: Cache Docker images
