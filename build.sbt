@@ -1,6 +1,6 @@
 import sbt.librarymanagement.InclExclRule
 
-val awsSdkVersion = "1.11.728"
+val awsSdkVersion = "1.12.676"
 val sparkVersion = "2.4.4"
 
 lazy val migrator = (project in file("migrator")).settings(
