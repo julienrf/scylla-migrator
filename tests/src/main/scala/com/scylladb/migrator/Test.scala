@@ -1,9 +1,11 @@
 package com.scylladb.migrator
 
-import com.amazonaws.auth.{AWSStaticCredentialsProvider, BasicAWSCredentials}
-import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
-import com.amazonaws.services.dynamodbv2.model.ListTablesRequest
-import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
+//import com.amazonaws.auth.{AWSStaticCredentialsProvider, BasicAWSCredentials}
+//import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
+//import com.amazonaws.services.dynamodbv2.model.ListTablesRequest
+//import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
+import software.amazon.awssdk.auth.credentials.{AwsBasicCredentials, StaticCredentialsProvider}
+import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 
 import java.net.URI
@@ -28,7 +30,11 @@ object Test {
 //
 //    println(sourceDDb.listTables())
 
-    val source = DynamoDbClient.builder().endpointOverride(new URI("http://localhost:8001")).build()
+    val source = DynamoDbClient.builder()
+      .endpointOverride(new URI("http://localhost:8001"))
+      .region(Region.EU_CENTRAL_1)
+      .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("dummy", "dummy")))
+      .build()
     println(source.listTables())
 
 //    println(targetAlternator.listTables())
