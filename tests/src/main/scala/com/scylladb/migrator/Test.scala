@@ -19,7 +19,7 @@ object Test {
     val sourceDDb = AmazonDynamoDBClientBuilder
       .standard()
       .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
-//      .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy")))
+      .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy")))
 //      .build()
 //    println(sourceDDb.listTables())
 
