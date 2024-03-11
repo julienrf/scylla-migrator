@@ -18,7 +18,7 @@ object Test {
       .standard()
       .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
       .build()
-//    println(sourceDDb.listTables())
+    println(sourceDDb.listTables())
 
 
 //    println(targetAlternator.listTables())
