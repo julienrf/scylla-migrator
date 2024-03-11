@@ -20,7 +20,7 @@ object Test {
       .standard()
       .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
       .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy")))
-//      .build()
+      .build()
 //    println(sourceDDb.listTables())
 
 
