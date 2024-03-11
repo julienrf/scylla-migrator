@@ -14,10 +14,10 @@ object Test {
   def main(args: Array[String]): Unit = {
     scala.sys.process.Process("curl http://localhost:8001").run().exitValue()
 
-//    val sourceDDb: AmazonDynamoDB = AmazonDynamoDBClientBuilder
-//      .standard()
-//      .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
-//      .build()
+    val sourceDDb: AmazonDynamoDB = AmazonDynamoDBClientBuilder
+      .standard()
+      .withEndpointConfiguration(new EndpointConfiguration("http://localhost:8001", "eu-central-1"))
+      .build()
 //    println(sourceDDb.listTables())
 
 
