@@ -26,10 +26,12 @@ jobs:
       - name: Build migrator
         run: ./build.sh
       - name: Set up services
-        run: docker compose -f docker-compose-tests.yml up -d --network ${{ job.container.network }}
+        run: docker compose -f docker-compose-tests.yml up -d
       - name: Wait for services to be up
         run: sleep 30
-      - run: docker ps -a
+      - run: |
+          docker ps -a
+          docker network ls
       - name: Run tests
         run: sbt test
       - name: Stop services
