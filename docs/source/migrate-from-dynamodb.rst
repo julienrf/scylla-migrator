@@ -114,7 +114,7 @@ Additionally, you can also provide the following optional properties:
 
 Where ``<host>``, ``<port>``, ``<region>``, ``<access-key>``, and ``<secret-key>`` should be replaced with your specific values.
 
-The Migrator also supports advanced AWS authentication options such as using `AssumeRole <https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html>`_. Please read the :doc:`configuration reference </configuration#aws-authentication>` for more details.
+The Migrator also supports advanced AWS authentication options such as using `AssumeRole <https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html>`_. Please read the `configuration reference </configuration#aws-authentication>`_ for more details.
 
 ---------------------------
 Configuring the Destination
@@ -174,4 +174,4 @@ Additionally, you can also set the following optional properties:
 
 Where ``<host>``, ``<port>``, ``<region>``, ``<access-key>``, and ``<secret-key>`` are replaced with your specific values.
 
-The Migrator also supports advanced AWS authentication options such as using `AssumeRole <https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html>`_. Please read the :doc:`configuration reference </configuration#aws-authentication>` for more details.
+The Migrator also supports advanced AWS authentication options such as using `AssumeRole <https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html>`_. Please read the `configuration reference </configuration#aws-authentication>`_ for more details.
