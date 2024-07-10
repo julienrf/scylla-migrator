@@ -1,0 +1,8 @@
+===============
+Getting Started
+===============
+
+- overview
+- set up with Ansible
+- set up with AWS EMR
+- manual set up of a standalone Spark cluster

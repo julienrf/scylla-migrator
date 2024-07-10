@@ -1,0 +1,706 @@
+
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    
+    
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width initial-scale=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>
+             Migrate from DynamoDB | ScyllaDB Docs 
+        </title>
+        <meta name="description" content="Migrate data using Spark from Cassandra or DynamoDB to Scylla." />
+        <link rel="icon" href="../_static/img/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="../_static/img/favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" href="../_static/img/favicon-228x228.png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="../_static/img/favicon-228x228.png" />
+        <meta name="msapplication-TileImage" href="../_static/img/favicon-228x228.png" />
+
+        
+            
+            
+        
+
+        
+            <link rel="canonical" href="https://migrator.docs.scylladb.com/migrate-from-dynamodb/"/>
+        
+
+        <link rel="author" href="mailto:info@scylladb.com" />
+
+        
+            
+        <!-- increase expertrec loading priority-->
+        <link rel="dns-prefetch" href="https://cse.expertrec.com">
+
+        <!-- increase font loading priority -->
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preload" as="style"
+              href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" />
+
+        <!-- async CSS -->
+        <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');"
+              href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" />
+
+        <!-- no-JS fallback -->
+        <noscript>
+            <link rel="stylesheet"
+                  href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" />
+        </noscript>
+        
+            
+                <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
+            
+        
+            
+                <link rel="stylesheet" type="text/css" href="../_static/css/main.css?v=60de4c37" />
+            
+        
+            
+                <link rel="stylesheet" type="text/css" href="../_static/sphinx_collapse.css?v=226d88b4" />
+            
+        
+            
+                <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+            
+        
+    
+        
+        
+            
+        <script type="text/javascript" src="../_static/js/runtime.bundle.js"></script>
+        <script type="text/javascript" src="../_static/js/main.bundle.js"></script>
+        
+            
+                <script src="../_static/documentation_options.js?v=187304be"></script>
+            
+        
+            
+                <script src="../_static/doctools.js?v=888ff710"></script>
+            
+        
+            
+                <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+            
+        
+            
+                <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+            
+        
+            
+                <script src="../_static/copybutton.js?v=f281be69"></script>
+            
+        
+    
+            
+                <!-- Local meta tags -->
+            
+            
+                <!-- Google Tag Manager global -->
+<script>
+    (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({
+            "gtm.start": new Date().getTime(),
+            event: "gtm.js"
+        });
+        var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", "GTM-T8P2JP");
+</script>
+<!-- End Google Tag Manager -->
+
+<!-- Google Tag Manager docs -->
+<script>
+    (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({
+            "gtm.start": new Date().getTime(),
+            event: "gtm.js"
+        });
+        var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", "GTM-54NWVS4");
+</script>
+<!-- End Google Tag Manager -->
+
+<!-- Expertrec -->
+<script>
+    var id = "e2077224-9ccf-11e9-a0c9-0242ac130002";
+    var ci_search = document.createElement("script");
+    ci_search.type = "text/javascript";
+    ci_search.async = true;
+    ci_search.src = "https://cse.expertrec.com/api/js/ci_common.js?id=" + id;
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(ci_search, s);
+</script>
+<!-- End Expertrec -->
+            
+        
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/b1870adf6a.js" crossorigin="anonymous"></script>
+        <!-- End Font Awesome -->
+    </head>
+
+    <body>
+        <section class="promo-banner  promo-banner--hide" style="display: none;">
+    <div class="promo-banner-wrapper">
+        
+        <div class="promo-banner__title">ScyllaDB University Live | Free Virtual Training Event</div>
+        <a class="promo-banner__button button button--reverse" href="#"
+           target="_blank" rel="noopener noreferrer">Learn more</a>
+        <button class="promo-banner__close">
+            <i class="scylla-icon scylla-icon--close"></i>
+        </button>
+    </div>
+</section>
+        <header class="header">
+    <div class="header-logo">
+        <a class="header-logo__img" href="https://scylladb.com/">
+            <img src="../_static/img/logo-docs.svg" alt="ScyllaDB Documentation Logo" />
+        </a>
+        <span class="header-logo__bar"></span>
+        <a class="header-logo__text" href="https://docs.scylladb.com/">
+            Documentation
+        </a>
+    </div>
+    <div class="header-navigation">
+        <ul class="dropdown menu scylla-dropdown scylla-dropdown--header" data-dropdown-menu>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Server
+                    <i class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://opensource.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--about-us"></i>
+                            ScyllaDB Open Source
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://enterprise.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--enterprise"></i>ScyllaDB Enterprise
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://scylla.docs.scylladb.com/stable/alternator/alternator.html">
+                            <i class="scylla-icon scylla-icon--alternator"></i>
+                            ScyllaDB Alternator
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="scylla-dropdown__item">
+                <a href="https://docs.scylladb.com/scylla-cloud/" class="scylla-dropdown__title">Cloud</a>
+            </li>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Tools <i
+                    class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://manager.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--manager"></i>ScyllaDB Manager</a>
+                    </li>
+                    <li>
+                        <a href="https://monitoring.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--monitoring"></i>ScyllaDB
+                            Monitoring Stack</a>
+                    </li>
+                    <li>
+                        <a href="https://operator.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--operator"></i>ScyllaDB Operator
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Drivers <i
+                    class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://docs.scylladb.com/using-scylla/drivers/cql-drivers/">
+                            <i class="scylla-icon scylla-icon--nsql-guides"></i>CQL Drivers
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://docs.scylladb.com/using-scylla/drivers/dynamo-drivers/">
+                            <i class="scylla-icon scylla-icon--alternator"></i>DynamoDB Drivers
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div class="header-button">
+            <a href="https://www.scylladb.com/download/" class="button">Download</a>
+        </div>
+    </div>
+    <div class="header-search-box">
+        <div class="search-box">
+            <ci-search></ci-search>
+        </div>
+    </div>
+    <div class="side-nav-toggle" data-toggle="side-nav">
+    <div class="side-nav-toggle__button">
+        <img src="../_static/img/menu.svg" alt="Menu" />
+    </div>
+</div>
+</header>
+        <section
+            class="layout  layout--sidebar layout--has-secondary-sidebar ">
+            <div class="content large-order-2">
+                
+                    
+                
+                
+                    <div class="pre-content">
+                        <div class="breadcrumbs">
+    <span class="bread__item">
+        <a href="https://docs.scylladb.com"
+           class="bread__highlight">
+            <i class="fas fa-home"></i> ScyllaDB Docs
+        </a>
+    </span>
+    <span class="bread__item">
+        <a href="../"
+           class="bread__highlight">
+            ScyllaDB Migrator
+        </a>
+    </span>
+    
+    <span class="bread__item bread__item--last">Migrate from DynamoDB</span>
+</div>
+                    </div>
+                
+                <section id="migrate-from-dynamodb">
+<h1>Migrate from DynamoDB<a class="headerlink" href="#migrate-from-dynamodb" title="Link to this heading">¶</a></h1>
+<p>This page explains how to fill the <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">target</span></code> properties of the <a class="reference external" href="/configuration">configuration file</a> to migrate data:</p>
+<ul class="simple">
+<li><p>from a DynamoDB table, a ScyllaDB Alternator table, or a <a class="reference external" href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/S3DataExport.HowItWorks.html">DynamoDB S3 export</a>,</p></li>
+<li><p>to a DynamoDB table or a ScyllaDB Alternator table.</p></li>
+</ul>
+<p>In file <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>, make sure to keep only one <code class="docutils literal notranslate"><span class="pre">source</span></code> property and one <code class="docutils literal notranslate"><span class="pre">target</span></code> property, and configure them as explained in the following subsections according to your case.</p>
+<section id="configuring-the-source">
+<h2>Configuring the Source<a class="headerlink" href="#configuring-the-source" title="Link to this heading">¶</a></h2>
+<p>The data <code class="docutils literal notranslate"><span class="pre">source</span></code> can be a DynamoDB or Alternator table, or a DynamoDB S3 export.</p>
+<section id="reading-from-dynamodb-or-alternator">
+<h3>Reading from DynamoDB or Alternator<a class="headerlink" href="#reading-from-dynamodb-or-alternator" title="Link to this heading">¶</a></h3>
+<p>In both cases, when reading from DynamoDB or Alternator, the type of source should be <code class="docutils literal notranslate"><span class="pre">dynamodb</span></code> in the configuration file. Here is a minimal <code class="docutils literal notranslate"><span class="pre">source</span></code> configuration to read a DynamoDB table:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">source</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynamodb</span>
+<span class="w">  </span><span class="nt">table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;table&gt;</span>
+<span class="w">  </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;region&gt;</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;table&gt;</span></code> is the name of the table to read, and <code class="docutils literal notranslate"><span class="pre">&lt;region&gt;</span></code> is the AWS region where the DynamoDB instance is located.</p>
+<p>To read from the Alternator, you need to provide an <code class="docutils literal notranslate"><span class="pre">endpoint</span></code> instead of a <code class="docutils literal notranslate"><span class="pre">region</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">source</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynamodb</span>
+<span class="w">  </span><span class="nt">table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;table&gt;</span>
+<span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://&lt;host&gt;</span>
+<span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;port&gt;</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;host&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;port&gt;</span></code> should be replaced with the host name and TCP port of your Alternator instance.</p>
+<p>In practice, your source database (DynamoDB or Alternator) may require authentication. You can provide the AWS credentials with the <code class="docutils literal notranslate"><span class="pre">credentials</span></code> property:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">source</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynamodb</span>
+<span class="w">  </span><span class="nt">table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;table&gt;</span>
+<span class="w">  </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;region&gt;</span>
+<span class="w">  </span><span class="nt">credentials</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">accessKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;access-key&gt;</span>
+<span class="w">    </span><span class="nt">secretKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;secret-key&gt;</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;access-key&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;secret-key&gt;</span></code> should be replaced with your actual AWS access key and secret key.</p>
+<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="/configuration#aws-authentication">configuration reference</a> for more details.</p>
+<p>Last, you can provide the following optional properties:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">source</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ... same as above</span>
+
+<span class="w">  </span><span class="c1"># Split factor for reading. The default is to split the source data into chunks</span>
+<span class="w">  </span><span class="c1"># of 128 MB that can be processed in parallel by the Spark executors.</span>
+<span class="w">  </span><span class="nt">scanSegments</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="c1"># Throttling settings, set based on your database capacity (or wanted capacity)</span>
+<span class="w">  </span><span class="nt">readThroughput</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="c1"># Can be between 0.1 and 1.5, inclusively.</span>
+<span class="w">  </span><span class="c1"># 0.5 represents the default read rate, meaning that the job will attempt to consume half of the read capacity of the table.</span>
+<span class="w">  </span><span class="c1"># If you increase the value above 0.5, spark will increase the request rate; decreasing the value below 0.5 decreases the read request rate.</span>
+<span class="w">  </span><span class="c1"># (The actual read rate will vary, depending on factors such as whether there is a uniform key distribution in the DynamoDB table.)</span>
+<span class="w">  </span><span class="nt">throughputReadPercent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<span class="w">  </span><span class="c1"># At most how many tasks per Spark executor? The default is to use the same as &#39;scanSegments&#39;.</span>
+<span class="w">  </span><span class="nt">maxMapTasks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</pre></div>
+</div>
+</section>
+<section id="reading-a-dynamodb-s3-export">
+<h3>Reading a DynamoDB S3 Export<a class="headerlink" href="#reading-a-dynamodb-s3-export" title="Link to this heading">¶</a></h3>
+<p>To read the content of a <a class="reference external" href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/S3DataExport.HowItWorks.html">DynamoDB table exported to S3</a>, use the <code class="docutils literal notranslate"><span class="pre">source</span></code> type <code class="docutils literal notranslate"><span class="pre">dynamodb-s3-export</span></code>. Here is a minimal source configuration:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">source</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynamodb-s3-export</span>
+<span class="w">  </span><span class="c1"># Name of the S3 bucket where the DynamoDB table has been exported</span>
+<span class="w">  </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;bucket-name&gt;</span>
+<span class="w">  </span><span class="c1"># Key of the `manifest-summary.json` object in the bucket</span>
+<span class="w">  </span><span class="nt">manifestKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;manifest-summary-key&gt;</span>
+<span class="w">  </span><span class="c1"># Key schema and attribute definitions, see https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_TableCreationParameters.html</span>
+<span class="w">  </span><span class="nt">tableDescription</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># See https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_AttributeDefinition.html</span>
+<span class="w">    </span><span class="nt">attributeDefinitions</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;attribute-name&gt;</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;attribute-type&gt;</span>
+<span class="w">      </span><span class="c1"># ... other attributes</span>
+<span class="w">    </span><span class="c1"># See https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_KeySchemaElement.html</span>
+<span class="w">    </span><span class="nt">keySchema</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;key-name&gt;</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;key-type&gt;</span>
+<span class="w">      </span><span class="c1"># ... other key schema definitions</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;bucket-name&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;manifest-summary-key&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;attribute-name&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;attribute-type&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;key-name&gt;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&lt;key-type&gt;</span></code> should be replaced with your specific values.</p>
+<p>Here is a concrete example assuming the export manifest summary URL is <code class="docutils literal notranslate"><span class="pre">s3://my-dynamodb-exports/my-path/AWSDynamoDB/01234567890123-1234abcd/manifest-summary.json</span></code>, and the table only uses a single text attribute <code class="docutils literal notranslate"><span class="pre">id</span></code> as a partition key:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">source</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynamodb-s3-export</span>
+<span class="w">  </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-dynamodb-exports</span>
+<span class="w">  </span><span class="nt">manifestKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-path/AWSDynamoDB/01234567890123-1234abcd/manifest-summary.json</span>
+<span class="w">  </span><span class="nt">tableDescription</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">attributeDefinitions</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S</span>
+<span class="w">    </span><span class="nt">keySchema</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HASH</span>
+</pre></div>
+</div>
+<p>Additionally, you can provide the following optional properties:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">source</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ... same as above</span>
+
+<span class="w">  </span><span class="c1"># Connect to a custom endpoint instead of the standard AWS S3 endpoint</span>
+<span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Specify the hostname without a protocol</span>
+<span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;host&gt;</span>
+<span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;port&gt;</span>
+
+<span class="w">  </span><span class="c1"># AWS availability region</span>
+<span class="w">  </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;region&gt;</span>
+
+<span class="w">  </span><span class="c1"># Connection credentials:</span>
+<span class="w">  </span><span class="nt">credentials</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">accessKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;access-key&gt;</span>
+<span class="w">    </span><span class="nt">secretKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;secret-key&gt;</span>
+
+<span class="w">  </span><span class="c1"># Whether to use “path-style access” in S3 (see https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html). Default is false.</span>
+<span class="w">  </span><span class="nt">usePathStyleAccess</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;host&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;port&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;region&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;access-key&gt;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&lt;secret-key&gt;</span></code> should be replaced with your specific values.</p>
+<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="/configuration#aws-authentication">configuration reference</a> for more details.</p>
+</section>
+</section>
+<section id="configuring-the-destination">
+<h2>Configuring the Destination<a class="headerlink" href="#configuring-the-destination" title="Link to this heading">¶</a></h2>
+<p>The migration <code class="docutils literal notranslate"><span class="pre">target</span></code> can be DynamoDB or Alternator. In both cases, we use the configuration type <code class="docutils literal notranslate"><span class="pre">dynamodb</span></code> in the configuration. Here is a minimal <code class="docutils literal notranslate"><span class="pre">target</span></code> configuration to write to DynamoDB or Alternator:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">target</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynamodb</span>
+<span class="w">  </span><span class="c1"># Name of the table to write. If it does not exist, it will be created on the fly.</span>
+<span class="w">  </span><span class="nt">table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;table&gt;</span>
+<span class="w">  </span><span class="c1"># When transferring DynamoDB sources to DynamoDB targets (such as other DynamoDB tables or Alternator tables),</span>
+<span class="w">  </span><span class="c1"># the migrator supports transferring live changes occurring on the source table after transferring an initial</span>
+<span class="w">  </span><span class="c1"># snapshot.</span>
+<span class="w">  </span><span class="c1"># Please see the documentation page “Stream Changes” for more details about this option.</span>
+<span class="w">  </span><span class="nt">streamChanges</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;table&gt;</span></code> should be replaced with your specific value.</p>
+<p>Additionally, you can also set the following optional properties:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">target</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ... same as above</span>
+
+<span class="w">  </span><span class="c1"># Connect to a custom endpoint. Mandatory if writing to Scylla Alternator.</span>
+<span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># If writing to Scylla Alternator, prefix the hostname with &#39;http://&#39;.</span>
+<span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;host&gt;</span>
+<span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;port&gt;</span>
+
+<span class="w">  </span><span class="c1"># AWS availability region:</span>
+<span class="w">  </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;region&gt;</span>
+
+<span class="w">  </span><span class="c1"># Authentication credentials:</span>
+<span class="w">  </span><span class="nt">credentials</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">accessKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;access-key&gt;</span>
+<span class="w">    </span><span class="nt">secretKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;secret-key&gt;</span>
+
+<span class="w">  </span><span class="c1"># Split factor for writing.</span>
+<span class="w">  </span><span class="nt">scanSegments</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+
+<span class="w">  </span><span class="c1"># Throttling settings, set based on your database capacity (or wanted capacity)</span>
+<span class="w">  </span><span class="nt">readThroughput</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+
+<span class="w">  </span><span class="c1"># Can be between 0.1 and 1.5, inclusively.</span>
+<span class="w">  </span><span class="c1"># 0.5 represents the default read rate, meaning that the job will attempt to consume half of the read capacity of the table.</span>
+<span class="w">  </span><span class="c1"># If you increase the value above 0.5, spark will increase the request rate; decreasing the value below 0.5 decreases the read request rate.</span>
+<span class="w">  </span><span class="c1"># (The actual read rate will vary, depending on factors such as whether there is a uniform key distribution in the DynamoDB table.)</span>
+<span class="w">  </span><span class="nt">throughputReadPercent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+
+<span class="w">  </span><span class="c1"># At most how many tasks per Spark executor?</span>
+<span class="w">  </span><span class="nt">maxMapTasks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+
+<span class="w">  </span><span class="c1"># When streamChanges is true, skip the initial snapshot transfer and only stream changes.</span>
+<span class="w">  </span><span class="c1"># This setting is ignored if streamChanges is false.</span>
+<span class="w">  </span><span class="nt">skipInitialSnapshotTransfer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;host&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;port&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;region&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;access-key&gt;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&lt;secret-key&gt;</span></code> are replaced with your specific values.</p>
+<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="/configuration#aws-authentication">configuration reference</a> for more details.</p>
+</section>
+</section>
+
+                
+                    <div class="post-content">
+                        
+    <div class="feedback-container">
+        <p class="feedback-container__title">Was this page helpful?</p>
+        <span data-tooltip tabindex="1" title="Yes" data-position="top">
+            <button class="feedback-container__button" id="feedback-positive">
+                <i class="feedback-container__icon scylla-icon scylla-icon--thumbs-up"></i>
+            </button>
+        </span>
+        <span data-tooltip tabindex="1" title="No" data-position="top">
+            <button class="feedback-container__button" id="feedback-negative">
+                <i class="feedback-container__icon scylla-icon scylla-icon--thumbs-down"></i>
+            </button>
+        </span>
+        <div class="feedback-container__message" id="feedback-message"></div>
+    </div>
+
+    <script>
+        function resetFeedbackButtonActive() {
+            const feedbackButtons = document.getElementsByClassName('feedback-container__button');
+            for (let i = 0; i < feedbackButtons.length; i++) {
+                feedbackButtons[i].classList.remove('active');
+            }
+        }
+
+        function showMessage(liked) {
+            const feedbackMessage = document.getElementById('feedback-message');
+            const themeGithubRepository = true;
+            let message = 'Great! Thanks for your feedback.';
+            if (themeGithubRepository && !liked) {
+                message = "Thanks for your feedback! Please don't hesitate to <a href='https://github.com/scylladb/scylla-migrator/issues/new?title=docs:%20Issue on page Migrate from DynamoDB&&body=I%20would%20like%20to%20report%20an%20issue%20on%20page%20https://migrator.docs.scylladb.com/migrate-from-dynamodb%0A%0A%23%23%23%20Problem%0A%0A%23%23%23%20%20Suggest%20a%20fix&labels=documentation'>create an issue</a> if you have any suggestions on how we can improve.";
+            }
+            feedbackMessage.innerHTML = message;
+        }
+
+        function sendGaEvent(liked) {
+            const event_label = liked ? "positive" : "negative";
+            const event = "feedback_" + event_label;
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': event,
+            });
+        }
+
+        const positiveFeebackButton = document.getElementById('feedback-positive');
+        const negativeFeedbackButton = document.getElementById('feedback-negative');
+
+        positiveFeebackButton.addEventListener('click', function() {
+            resetFeedbackButtonActive();
+            sendGaEvent(true);
+            showMessage(true);
+            positiveFeebackButton.classList.add('active');
+        });
+
+        negativeFeedbackButton.addEventListener('click', function() {
+            resetFeedbackButtonActive();
+            sendGaEvent(false);
+            showMessage(false);
+            negativeFeedbackButton.classList.add('active');
+        });
+    </script>
+
+                        <div class="content-navigation">
+    <div class="navigation navigation--prev">
+        
+            <a class="navigation__link" href="../migrate-from-cassandra-or-parquet/">
+                <button class="navigation__button">
+                    <i class="scylla-icon scylla-icon--chevron-left"></i>
+                </button>
+                <div class="navigation__title">
+                    <span class="colored">PREVIOUS</span> <br />Migrate from Cassandra or from a Parquet File
+                </div>
+            </a>
+        
+    </div>
+    <div class="navigation navigation--next">
+        
+            <a class="navigation__link" href="../stream-changes/">
+                <div class="navigation__title">
+                    <span class="colored">NEXT</span> <br />Stream Changes
+                </div>
+                <button class="navigation__button">
+                    <i class="scylla-icon scylla-icon--chevron-right"></i>
+                </button>
+            </a>
+        
+    </div>
+</div>
+                        <!-- Post content text -->
+                    </div>
+                
+            </div>
+            <div class="sidebar-left  large-order-1">
+                
+                    
+                        <div id="side-nav" class="side-nav custom-scroll-bar" data-closable data-toggler=".show">
+    <button class="collapsible-button">
+        <i class="scylla-icon scylla-icon--chevron-left"></i>
+    </button>
+    <div class="side-nav-content" style="visibility: hidden;">
+        <div class="side-nav__search">
+            <div class="search-box">
+                <ci-search></ci-search>
+            </div>
+        </div>
+        <div class="side-nav__title">
+            <a href="../">ScyllaDB Migrator</a>
+        </div>
+        <div class="side-nav__versions"></div>
+        <div class="side-nav__content">
+            <ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting-started/">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="scylla-icon scylla-icon--expand"></i></label><div class="break"></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/ansible/">Set Up a Spark Cluster with Ansible</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/spark-standalone/">Manual Set Up of a Spark Cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/aws-emr/">Set Up a Spark Cluster with AWS EMR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/docker/">Set Up a Spark Cluster with Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migrate-from-cassandra-or-parquet/">Migrate from Cassandra or from a Parquet File</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Migrate from DynamoDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream-changes/">Stream Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rename-columns/">Rename Columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validate/">Validate the Migration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration/">Configuration Reference</a></li>
+</ul>
+
+        </div>
+    </div>
+</div>
+                    
+                
+            </div>
+            
+                <div class="sidebar-right large-order-3">
+                    <div class="secondary-side-nav custom-scroll-bar">
+    
+    <ul class="contribute">
+        <li class="contribute__item">
+            <a href="https://github.com/scylladb/scylla-migrator/issues/new?title=docs:%20Issue on page Migrate from DynamoDB&&body=I%20would%20like%20to%20report%20an%20issue%20on%20page%20https://migrator.docs.scylladb.com/migrate-from-dynamodb%0A%0A%23%23%23%20Problem%0A%0A%23%23%23%20%20Suggest%20a%20fix&labels=documentation"
+               target="_blank">
+                <i class="icon fab fa-github" aria-hidden="true"></i>Create an issue
+            </a>
+        </li>
+        
+            <li class="contribute__item">
+                <a href="https://github.com/scylladb/scylla-migrator/edit/master/docs/source/migrate-from-dynamodb.rst"
+                   target="_blank">
+                    <i class="icon fa fa-edit" aria-hidden="true"></i>Edit this page
+                </a>
+            </li>
+        
+    </ul>
+
+    
+        <div class="secondary-side-nav__content">
+            <p class="topic-title">On this page</p>
+            <ul>
+<li><a class="reference internal" href="#">Migrate from DynamoDB</a><ul>
+<li><a class="reference internal" href="#configuring-the-source">Configuring the Source</a><ul>
+<li><a class="reference internal" href="#reading-from-dynamodb-or-alternator">Reading from DynamoDB or Alternator</a></li>
+<li><a class="reference internal" href="#reading-a-dynamodb-s3-export">Reading a DynamoDB S3 Export</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuring-the-destination">Configuring the Destination</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+    
+</div>
+                </div>
+            
+        </section>
+
+        <footer class="footer">
+    <div class="footer-group">
+        <div class="footer-top">
+            <a class="footer-logo" href="https://www.scylladb.com">
+                <img src="../_static/img/logo-scylla-horizontal-RGB.svg" alt="Logo" />
+            </a>
+            <div class="footer-links">
+                <a class="footer-links__link" href="https://docs.scylladb.com/" target="_blank">Docs</a>
+                <a class="footer-links__link" href="https://university.scylladb.com/" target="_blank">University</a>
+                <a class="footer-links__link" href="https://www.scylladb.com/company/contact-us/" target="_blank">Contact Us</a>
+                <a class="footer-links__link" href="https://www.scylladb.com/company/" target="_blank">About Us</a>
+            </div>
+            <div class="footer-actions">
+                <a class="footer-actions__link" href="https://groups.google.com/g/scylladb-users" target="_blank">
+                    <span data-tooltip tabindex="1" title="User mailing list" data-position="bottom">
+                        <img src="../_static/img/icons/icon-mail-list.svg" alt="Mail List Icon" />
+                    </span>
+                </a>
+                <a class="footer-actions__link" href="http://slack.scylladb.com/" target="_blank">
+                    <span data-tooltip tabindex="1" title="User Slack channel" data-position="bottom">
+                        <img src="../_static/img/icons/icon-slack.svg" alt="Slack Icon" />
+                    </span>
+                </a>
+                <a class="footer-actions__link" href="https://forum.scylladb.com/" target="_blank">
+                    <span data-tooltip tabindex="1" title="Community forum" data-position="bottom">
+                        <img src="../_static/img/icons/icon-forum.svg" alt="Forum Icon" />
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            
+                <div class="footer-bottom__copyright">
+                    
+                        
+                            &#169; 2024, ScyllaDB. All rights reserved.
+                        
+                    
+                </div>
+            
+            
+                <div class="footer-bottom__last-updated">
+                    
+                        Last updated on 10 Jul 2024.
+                    
+                </div>
+            
+            <div class="footer-bottom__version">
+                Powered by
+                <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a> &amp;
+                <a href="https://sphinx-theme.scylladb.com/">ScyllaDB Theme 1.7.2</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        <noscript>
+            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T8P2JP" height="0" width="0"
+                    style="display: none; visibility: hidden"></iframe>
+        </noscript>
+    </body>
+
+</html>
