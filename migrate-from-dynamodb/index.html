@@ -282,7 +282,7 @@
                 
                 <section id="migrate-from-dynamodb">
 <h1>Migrate from DynamoDB<a class="headerlink" href="#migrate-from-dynamodb" title="Link to this heading">¶</a></h1>
-<p>This page explains how to fill the <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">target</span></code> properties of the <a class="reference external" href="/configuration">configuration file</a> to migrate data:</p>
+<p>This page explains how to fill the <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">target</span></code> properties of the <a class="reference external" href="../configuration">configuration file</a> to migrate data:</p>
 <ul class="simple">
 <li><p>from a DynamoDB table, a ScyllaDB Alternator table, or a <a class="reference external" href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/S3DataExport.HowItWorks.html">DynamoDB S3 export</a>,</p></li>
 <li><p>to a DynamoDB table or a ScyllaDB Alternator table.</p></li>
@@ -322,7 +322,7 @@
 </pre></div>
 </div>
 <p>Where <code class="docutils literal notranslate"><span class="pre">&lt;access-key&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;secret-key&gt;</span></code> should be replaced with your actual AWS access key and secret key.</p>
-<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="/configuration#aws-authentication">configuration reference</a> for more details.</p>
+<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="../configuration#aws-authentication">configuration reference</a> for more details.</p>
 <p>Last, you can provide the following optional properties:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">source</span><span class="p">:</span>
 <span class="w">  </span><span class="c1"># ... same as above</span>
@@ -403,7 +403,7 @@
 </pre></div>
 </div>
 <p>Where <code class="docutils literal notranslate"><span class="pre">&lt;host&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;port&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;region&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;access-key&gt;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&lt;secret-key&gt;</span></code> should be replaced with your specific values.</p>
-<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="/configuration#aws-authentication">configuration reference</a> for more details.</p>
+<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="../configuration#aws-authentication">configuration reference</a> for more details.</p>
 </section>
 </section>
 <section id="configuring-the-destination">
@@ -425,9 +425,9 @@
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">target</span><span class="p">:</span>
 <span class="w">  </span><span class="c1"># ... same as above</span>
 
-<span class="w">  </span><span class="c1"># Connect to a custom endpoint. Mandatory if writing to Scylla Alternator.</span>
+<span class="w">  </span><span class="c1"># Connect to a custom endpoint. Mandatory if writing to ScyllaDB Alternator.</span>
 <span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span>
-<span class="w">    </span><span class="c1"># If writing to Scylla Alternator, prefix the hostname with &#39;http://&#39;.</span>
+<span class="w">    </span><span class="c1"># If writing to ScyllaDB Alternator, prefix the hostname with &#39;http://&#39;.</span>
 <span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;host&gt;</span>
 <span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;port&gt;</span>
 
@@ -460,7 +460,7 @@
 </pre></div>
 </div>
 <p>Where <code class="docutils literal notranslate"><span class="pre">&lt;host&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;port&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;region&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;access-key&gt;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&lt;secret-key&gt;</span></code> are replaced with your specific values.</p>
-<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="/configuration#aws-authentication">configuration reference</a> for more details.</p>
+<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="../configuration#aws-authentication">configuration reference</a> for more details.</p>
 </section>
 </section>
 

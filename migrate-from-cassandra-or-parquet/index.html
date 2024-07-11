@@ -280,20 +280,20 @@
 </div>
                     </div>
                 
-                <section id="migrate-from-cassandra-or-from-a-parquet-file">
-<h1>Migrate from Cassandra or from a Parquet File<a class="headerlink" href="#migrate-from-cassandra-or-from-a-parquet-file" title="Link to this heading">¶</a></h1>
-<p>This page explains how to fill the <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">target</span></code> properties of the <a class="reference external" href="/configuration">configuration file</a> to migrate data:</p>
+                <section id="migrate-from-apache-cassandra-or-from-a-parquet-file">
+<h1>Migrate from Apache Cassandra or from a Parquet File<a class="headerlink" href="#migrate-from-apache-cassandra-or-from-a-parquet-file" title="Link to this heading">¶</a></h1>
+<p>This page explains how to fill the <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">target</span></code> properties of the <a class="reference external" href="../configuration">configuration file</a> to migrate data:</p>
 <ul class="simple">
-<li><p>from Cassandra, ScyllaDB, or from a <a class="reference external" href="https://parquet.apache.org/">Parquet</a> file,</p></li>
-<li><p>to Cassandra or ScyllaDB.</p></li>
+<li><p>from Apache Cassandra, ScyllaDB, or from a <a class="reference external" href="https://parquet.apache.org/">Parquet</a> file,</p></li>
+<li><p>to Apache Cassandra or ScyllaDB.</p></li>
 </ul>
 <p>In file <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>, make sure to keep only one <code class="docutils literal notranslate"><span class="pre">source</span></code> property and one <code class="docutils literal notranslate"><span class="pre">target</span></code> property, and configure them as explained in the following subsections according to your case.</p>
 <section id="configuring-the-source">
 <h2>Configuring the Source<a class="headerlink" href="#configuring-the-source" title="Link to this heading">¶</a></h2>
-<p>The data <code class="docutils literal notranslate"><span class="pre">source</span></code> can be a Cassandra or ScyllaDB table, or a Parquet file.</p>
-<section id="reading-from-cassandra-or-scylladb">
-<h3>Reading from Cassandra or ScyllaDB<a class="headerlink" href="#reading-from-cassandra-or-scylladb" title="Link to this heading">¶</a></h3>
-<p>In both cases, when reading from Cassandra or ScyllaDB, the type of source should be <code class="docutils literal notranslate"><span class="pre">cassandra</span></code> in the configuration file. Here is a minimal <code class="docutils literal notranslate"><span class="pre">source</span></code> configuration:</p>
+<p>The data <code class="docutils literal notranslate"><span class="pre">source</span></code> can be an Apache Cassandra or ScyllaDB table, or a Parquet file.</p>
+<section id="reading-from-apache-cassandra-or-scylladb">
+<h3>Reading from Apache Cassandra or ScyllaDB<a class="headerlink" href="#reading-from-apache-cassandra-or-scylladb" title="Link to this heading">¶</a></h3>
+<p>In both cases, when reading from Apache Cassandra or ScyllaDB, the type of source should be <code class="docutils literal notranslate"><span class="pre">cassandra</span></code> in the configuration file. Here is a minimal <code class="docutils literal notranslate"><span class="pre">source</span></code> configuration:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">source</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cassandra</span>
 <span class="w">  </span><span class="c1"># Host name of one of the nodes of your database cluster</span>
@@ -315,7 +315,7 @@
 <span class="w">  </span><span class="c1"># available in the Spark cluster, and optimally more; higher splits will lead</span>
 <span class="w">  </span><span class="c1"># to more fine-grained resumes. Aim for 8 * (Spark cores).</span>
 <span class="w">  </span><span class="nt">splitCount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
-<span class="w">  </span><span class="c1"># Number of connections to use to Cassandra when copying</span>
+<span class="w">  </span><span class="c1"># Number of connections to use to Apache Cassandra when copying</span>
 <span class="w">  </span><span class="nt">connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
 <span class="w">  </span><span class="c1"># Number of rows to fetch in each read</span>
 <span class="w">  </span><span class="nt">fetchSize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
@@ -382,12 +382,12 @@
 </pre></div>
 </div>
 <p>Where <code class="docutils literal notranslate"><span class="pre">&lt;access-key&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;secret-key&gt;</span></code> should be replaced with your actual AWS access key and secret key.</p>
-<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="/configuration#aws-authentication">configuration reference</a> for more details.</p>
+<p>The Migrator also supports advanced AWS authentication options such as using <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">AssumeRole</a>. Please read the <a class="reference external" href="../configuration#aws-authentication">configuration reference</a> for more details.</p>
 </section>
 </section>
 <section id="configuring-the-destination">
 <h2>Configuring the Destination<a class="headerlink" href="#configuring-the-destination" title="Link to this heading">¶</a></h2>
-<p>The migration <code class="docutils literal notranslate"><span class="pre">target</span></code> can be Cassandra or Scylla. In both cases, we use the type <code class="docutils literal notranslate"><span class="pre">cassandra</span></code> in the configuration. Here is a minimal <code class="docutils literal notranslate"><span class="pre">target</span></code> configuration to write to Cassandra or ScyllaDB:</p>
+<p>The migration <code class="docutils literal notranslate"><span class="pre">target</span></code> can be Apache Cassandra or ScyllaDB. In both cases, we use the type <code class="docutils literal notranslate"><span class="pre">cassandra</span></code> in the configuration. Here is a minimal <code class="docutils literal notranslate"><span class="pre">target</span></code> configuration to write to Cassandra or ScyllaDB:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">target</span><span class="p">:</span>
 <span class="w">  </span><span class="c1"># can be &#39;cassandra&#39; or &#39;scylla&#39;, it does not matter</span>
 <span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cassandra</span>
@@ -404,7 +404,7 @@
 <span class="w">  </span><span class="c1"># Consistency Level for the target connection</span>
 <span class="w">  </span><span class="c1"># Options are: LOCAL_ONE, ONE, LOCAL_QUORUM, QUORUM.</span>
 <span class="w">  </span><span class="nt">consistencyLevel</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LOCAL_QUORUM</span>
-<span class="w">  </span><span class="c1"># Number of connections to use to Scylla/Cassandra when copying</span>
+<span class="w">  </span><span class="c1"># Number of connections to use to ScyllaDB / Apache Cassandra when copying</span>
 <span class="w">  </span><span class="nt">connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16</span>
 <span class="w">  </span><span class="c1"># Spark pads decimals with zeros appropriate to their scale. This causes values</span>
 <span class="w">  </span><span class="c1"># like &#39;3.5&#39; to be copied as &#39;3.5000000000...&#39; to the target. There&#39;s no good way</span>

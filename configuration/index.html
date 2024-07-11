@@ -310,14 +310,14 @@
 <p>The <code class="docutils literal notranslate"><span class="pre">source</span></code> property describes the type of data to read from. It must be an object with a field <code class="docutils literal notranslate"><span class="pre">type</span></code> defining the type of source, and other fields depending on the type of source.</p>
 <p>Valid values for the source <code class="docutils literal notranslate"><span class="pre">type</span></code> are:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">cassandra</span></code> for a CQL-compatible source (Cassandra or ScyllaDB).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cassandra</span></code> for a CQL-compatible source (Apache Cassandra or ScyllaDB).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">parquet</span></code> for a dataset stored using the Parquet format.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">dynamodb</span></code> for a DynamoDB-compatible source (AWS DynamoDB or ScyllaDB Alternator).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">dynamodb-s3-export</span></code> for a DynamoDB table exported to S3.</p></li>
 </ul>
 <p>The following subsections detail the schema of each source type.</p>
-<section id="cassandra-source">
-<h3>Cassandra Source<a class="headerlink" href="#cassandra-source" title="Link to this heading">¶</a></h3>
+<section id="apache-cassandra-source">
+<h3>Apache Cassandra Source<a class="headerlink" href="#apache-cassandra-source" title="Link to this heading">¶</a></h3>
 <p>A source of type <code class="docutils literal notranslate"><span class="pre">cassandra</span></code> can be used together with a target of type <code class="docutils literal notranslate"><span class="pre">cassandra</span></code> only.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">source</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cassandra</span>
@@ -346,7 +346,7 @@
 <span class="w">  </span><span class="c1"># available in the Spark cluster, and optimally more; higher splits will lead</span>
 <span class="w">  </span><span class="c1"># to more fine-grained resumes. Aim for 8 * (Spark cores).</span>
 <span class="w">  </span><span class="nt">splitCount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
-<span class="w">  </span><span class="c1"># Number of connections to use to Cassandra when copying</span>
+<span class="w">  </span><span class="c1"># Number of connections to use to Apache Cassandra when copying</span>
 <span class="w">  </span><span class="nt">connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
 <span class="w">  </span><span class="c1"># Number of rows to fetch in each read</span>
 <span class="w">  </span><span class="nt">fetchSize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
@@ -392,9 +392,9 @@
 <span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynamodb</span>
 <span class="w">  </span><span class="c1"># Name of the table to write. If it does not exist, it will be created on the fly.</span>
 <span class="w">  </span><span class="nt">table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;table&gt;</span>
-<span class="w">  </span><span class="c1"># Connect to a custom endpoint. Mandatory if writing to Scylla Alternator.</span>
+<span class="w">  </span><span class="c1"># Connect to a custom endpoint. Mandatory if writing to ScyllaDB Alternator.</span>
 <span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span>
-<span class="w">    </span><span class="c1"># If writing to Scylla Alternator, prefix the hostname with &#39;http://&#39;.</span>
+<span class="w">    </span><span class="c1"># If writing to ScyllaDB Alternator, prefix the hostname with &#39;http://&#39;.</span>
 <span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;host&gt;</span>
 <span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;port&gt;</span>
 <span class="w">  </span><span class="c1"># Optional - AWS availability region.</span>
@@ -463,12 +463,12 @@
 <p>The <code class="docutils literal notranslate"><span class="pre">target</span></code> property describes the type of data to write. It must be an object with a field <code class="docutils literal notranslate"><span class="pre">type</span></code> defining the type of target, and other fields depending on the type of target.</p>
 <p>Valid values for the target <code class="docutils literal notranslate"><span class="pre">type</span></code> are:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">cassandra</span></code> for a CQL-compatible target (Cassandra or ScyllaDB).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cassandra</span></code> for a CQL-compatible target (Apache Cassandra or ScyllaDB).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">dynamodb</span></code> for a DynamoDB-compatible target (DynamoDB or ScyllaDB Alternator).</p></li>
 </ul>
 <p>The following subsections detail the schema of each target type.</p>
-<section id="cassandra-target">
-<h3>Cassandra Target<a class="headerlink" href="#cassandra-target" title="Link to this heading">¶</a></h3>
+<section id="apache-cassandra-target">
+<h3>Apache Cassandra Target<a class="headerlink" href="#apache-cassandra-target" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">target</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cassandra</span>
 <span class="w">  </span><span class="c1"># Host name of one of the nodes of your target database cluster</span>
@@ -490,7 +490,7 @@
 <span class="w">  </span><span class="c1"># Consistency Level for the target connection</span>
 <span class="w">  </span><span class="c1"># Options are: LOCAL_ONE, ONE, LOCAL_QUORUM, QUORUM.</span>
 <span class="w">  </span><span class="nt">consistencyLevel</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LOCAL_QUORUM</span>
-<span class="w">  </span><span class="c1"># Number of connections to use to Scylla/Cassandra when copying</span>
+<span class="w">  </span><span class="c1"># Number of connections to use to ScyllaDB / Apache Cassandra when copying</span>
 <span class="w">  </span><span class="nt">connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16</span>
 <span class="w">  </span><span class="c1"># Spark pads decimals with zeros appropriate to their scale. This causes values</span>
 <span class="w">  </span><span class="c1"># like &#39;3.5&#39; to be copied as &#39;3.5000000000...&#39; to the target. There&#39;s no good way</span>
